@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Day 11 · Thursday Daily Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ════════════════════════════════════════════════════════
+   TOKENS
+════════════════════════════════════════════════════════ */
+:root{
+  /* Surfaces */
+  --bg:#f6f7fb; --bg2:#edf0f6; --card:#ffffff;
+  /* Brand: sharp cyan-teal */
+  --pri:#0e7490; --pri-dk:#0c5e75; --pri-lt:#ecfeff; --pri-mid:#a5f3fc;
+  --pri-grad-1:#06b6d4; --pri-grad-2:#0e7490;
+  /* Required accent */
+  --acc:#ea580c; --acc-lt:#fff7ed;
+  /* Spanish — emerald, contrasts with primary cyan */
+  --esp:#059669;
+  /* Text */
+  --txt:#0f172a; --txt2:#475569; --txt3:#94a3b8;
+  /* Borders */
+  --bdr:#e2e8f0; --bdr-foc:#0e7490;
+  /* States */
+  --err:#dc2626; --err-lt:#fef2f2; --err-bdr:#fca5a5;
+  --ok:#059669; --ok-lt:#ecfdf5;
+  /* Tighter radii for modern feel */
+  --r:10px; --rsm:8px; --rxs:5px;
+  /* Refined shadows */
+  --sh:0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.05);
+  --sh-md:0 4px 24px rgba(15,23,42,.07);
+}
+
+/* ════════════════════════════════════════════════════════
+   RESET
+════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;font-size:16px;line-height:1.55;
+  background:var(--bg);
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(14,116,144,.06),transparent 60%);
+  color:var(--txt);min-height:100vh;padding-bottom:9rem;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ════════════════════════════════════════════════════════
+   HEADER
+════════════════════════════════════════════════════════ */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--bdr);box-shadow:var(--sh)}
+.hdr-row{max-width:720px;margin:0 auto;padding:0 1.25rem;height:56px;display:flex;align-items:center;gap:.85rem}
+.hdr-icon{width:33px;height:33px;border-radius:9px;
+  background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;
+  box-shadow:0 4px 12px rgba(6,182,212,.25),inset 0 1px 0 rgba(255,255,255,.2)}
+.hdr-title{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:600;flex:1;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-prog{font-family:'Sora',sans-serif;font-size:.74rem;font-weight:600;color:var(--pri);
+  white-space:nowrap;flex-shrink:0;letter-spacing:.02em;
+  padding:.25rem .6rem;background:var(--pri-lt);border-radius:99px}
+.prog-rail{height:3px;background:var(--bg2);overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pri-grad-1),var(--pri-grad-2));width:0%;
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 8px rgba(6,182,212,.4)}
+
+/* Jump nav button */
+.jump-btn{background:var(--card);border:1px solid var(--bdr);border-radius:99px;
+  padding:.3rem .75rem;font-family:'Sora',sans-serif;font-size:.74rem;
+  font-weight:600;color:var(--txt2);cursor:pointer;display:flex;align-items:center;
+  gap:.35rem;white-space:nowrap;transition:all .18s;flex-shrink:0;letter-spacing:.01em}
+.jump-btn:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-lt)}
+.jump-panel{display:none;position:fixed;top:62px;right:1rem;z-index:70;
+  background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:.5rem;box-shadow:var(--sh-md);min-width:240px;max-height:70vh;overflow-y:auto}
+.jump-panel.open{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.jump-item{display:block;padding:.55rem .75rem;font-family:'Manrope',sans-serif;font-size:.83rem;font-weight:600;
+  color:var(--txt2);cursor:pointer;border-radius:var(--rxs);text-decoration:none;
+  transition:all .12s;border:none;background:none;width:100%;text-align:left}
+.jump-item:hover{background:var(--pri-lt);color:var(--pri)}
+
+/* ════════════════════════════════════════════════════════
+   RESTORE BANNER
+════════════════════════════════════════════════════════ */
+.restore-wrap{max-width:720px;margin:1.25rem auto 0;padding:0 1.25rem;display:none}
+.restore-wrap.show{display:block}
+.restore-box{background:#fefce8;border:1px solid #fde68a;border-radius:var(--r);
+  padding:.95rem 1.1rem;display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;box-shadow:var(--sh)}
+.restore-box i{color:#d97706;font-size:1rem;flex-shrink:0}
+.restore-txt{flex:1;font-size:.86rem;color:var(--txt2);min-width:160px;font-weight:500}
+.restore-txt strong{color:var(--txt);font-weight:700}
+.restore-acts{display:flex;gap:.5rem;flex-shrink:0}
+.rbtn{padding:.45rem .85rem;border-radius:var(--rxs);font-family:'Sora',sans-serif;
+  font-size:.78rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;letter-spacing:-.005em}
+.rbtn-y{background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));color:#fff;box-shadow:0 2px 8px rgba(6,182,212,.25)}
+.rbtn-y:hover{box-shadow:0 4px 12px rgba(6,182,212,.35);transform:translateY(-1px)}
+.rbtn-n{background:var(--bg2);color:var(--txt2)}.rbtn-n:hover{background:var(--bdr)}
+
+/* ════════════════════════════════════════════════════════
+   SAVE PILL
+════════════════════════════════════════════════════════ */
+.save-pill{position:fixed;top:66px;right:1rem;z-index:55;display:flex;align-items:center;
+  gap:.4rem;padding:.32rem .75rem;background:var(--ok-lt);border:1px solid #a7f3d0;
+  border-radius:99px;font-family:'Sora',sans-serif;font-size:.73rem;font-weight:600;color:var(--ok);
+  opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s;pointer-events:none;letter-spacing:.01em;
+  box-shadow:0 2px 8px rgba(5,150,105,.15)}
+.save-pill.show{opacity:1;transform:translateY(0)}
+
+/* ════════════════════════════════════════════════════════
+   MAIN / SECTION STRUCTURE
+════════════════════════════════════════════════════════ */
+main{max-width:720px;margin:0 auto;padding:1.5rem 1.25rem}
+
+.instr{background:linear-gradient(135deg,var(--pri-lt),#f0fdfa);border:1px solid var(--pri-mid);border-radius:var(--r);
+  padding:1.1rem 1.2rem;margin-bottom:1.75rem;display:flex;gap:.85rem;position:relative;overflow:hidden}
+.instr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pri-grad-1),var(--pri-grad-2))}
+.instr-icon{color:var(--pri);font-size:1rem;padding-top:.2rem;flex-shrink:0}
+.instr p{font-size:.9rem;color:var(--txt2);margin-bottom:.3rem}
+.instr p:last-child{margin-bottom:0}
+.instr strong{color:var(--txt);font-weight:700}.es{color:var(--esp);font-weight:600}
+
+.sec-hdr{display:flex;align-items:center;gap:.75rem;margin:2.25rem 0 1rem;scroll-margin-top:74px}
+.sec-hdr:first-child{margin-top:0}
+.sec-pip{width:3px;height:28px;border-radius:2px;
+  background:linear-gradient(180deg,var(--pri-grad-1),var(--pri-grad-2));flex-shrink:0;
+  position:relative}
+.sec-pip::before{content:'';position:absolute;top:-3px;left:-2px;width:7px;height:7px;
+  border-radius:50%;background:var(--pri-grad-1);box-shadow:0 0 8px rgba(6,182,212,.5)}
+.sec-title{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:var(--txt);letter-spacing:-.005em}
+.sec-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--bdr),transparent)}
+
+.sec-note{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:1rem 1.1rem;margin-bottom:1rem;font-size:.89rem;color:var(--txt2);box-shadow:var(--sh)}
+.sec-note p{margin-bottom:.3rem}.sec-note p:last-child{margin-bottom:0}
+.sec-note strong{color:var(--txt);font-weight:700}
+
+.game-card{background:linear-gradient(135deg,var(--pri-lt),#ecfdf5);
+  border:1px solid var(--pri-mid);border-radius:var(--r);padding:1.2rem;margin-bottom:1rem;
+  position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(6,182,212,.15),transparent 70%);pointer-events:none}
+.game-card h3{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:var(--pri-dk);margin-bottom:.5rem;letter-spacing:-.005em}
+.game-card p{font-size:.87rem;color:var(--txt2);margin-bottom:.3rem}
+.game-link{display:inline-flex;align-items:center;gap:.45rem;margin-top:.8rem;
+  padding:.7rem 1.15rem;background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  color:#fff;border-radius:var(--rsm);font-family:'Sora',sans-serif;font-weight:600;font-size:.9rem;
+  text-decoration:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(6,182,212,.3)}
+.game-link:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(6,182,212,.4)}
+
+/* ════════════════════════════════════════════════════════
+   QUESTION CARDS
+════════════════════════════════════════════════════════ */
+.qcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:1.3rem 1.15rem;margin-bottom:.9rem;box-shadow:var(--sh);
+  animation:fadeUp .28s ease both;transition:border-color .2s,box-shadow .2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.qcard.answered{border-left:3px solid var(--pri);padding-left:calc(1.15rem - 2px)}
+.qcard.err-state{border-color:var(--err-bdr);background:var(--err-lt)}
+
+.qcard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.15rem}
+.atick{width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;
+  opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;
+  box-shadow:0 2px 6px rgba(6,182,212,.3)}
+.atick i{font-size:.6rem;color:#fff}
+.qcard.answered .atick{opacity:1;transform:scale(1)}
+
+.qlabel{font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:var(--txt);display:block;letter-spacing:-.005em;line-height:1.4}
+.err-state .qlabel{color:var(--err)}
+.qlabel-es{display:block;font-size:.83rem;font-weight:500;color:var(--esp);margin-top:.15rem;margin-bottom:.9rem;line-height:1.35}
+.req-chip{display:inline-flex;align-items:center;gap:.25rem;font-family:'Sora',sans-serif;font-size:.65rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--acc);background:var(--acc-lt);
+  border:1px solid #fed7aa;border-radius:4px;padding:.12rem .45rem;margin-left:.4rem;vertical-align:middle}
+.qnum{font-family:'Sora',sans-serif;font-size:.8rem;font-weight:600;color:var(--pri);margin-right:.35rem}
+
+/* Auto-derived hint */
+.auto-hint{display:inline-flex;align-items:center;gap:.3rem;margin-top:.55rem;
+  font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:500;color:var(--txt3)}
+.auto-hint i{color:var(--ok);font-size:.7rem}
+
+/* Error slot */
+.ferr{font-size:.8rem;color:var(--err);margin-top:.55rem;align-items:center;gap:.3rem;display:none}
+.ferr.show{display:flex}
+
+/* Reset link */
+.reset-row{margin-top:.5rem;text-align:right}
+.rlnk{background:none;border:none;font-family:inherit;font-size:.76rem;color:var(--txt3);
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+  padding:.15rem 0;transition:color .15s}
+.rlnk:hover{color:var(--txt2)}
+
+/* ════════════════════════════════════════════════════════
+   DATE / TIME INPUTS
+════════════════════════════════════════════════════════ */
+.field-row{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem}
+.field-wrap{position:relative;flex:1 1 200px}
+.field-wrap .fi{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);
+  color:var(--txt3);pointer-events:none;font-size:.87rem;z-index:1}
+.fi-inp{width:100%;padding:.78rem .9rem .78rem 2.3rem;border:1px solid var(--bdr);
+  border-radius:var(--rsm);font-family:'Manrope',sans-serif;font-size:.97rem;color:var(--txt);
+  background:var(--bg);outline:none;transition:border-color .18s,box-shadow .18s,background .18s;
+  -webkit-appearance:none;font-weight:500}
+.fi-inp:focus{border-color:var(--bdr-foc);background:var(--card);box-shadow:0 0 0 3px rgba(14,116,144,.12)}
+.err-state .fi-inp{border-color:var(--err-bdr)}
+.auto-note{font-size:.74rem;color:var(--txt3);margin-top:.45rem;display:flex;align-items:center;gap:.3rem;font-weight:500}
+.auto-note i{color:var(--ok);font-size:.68rem}
+.qbtn{display:inline-flex;align-items:center;gap:.4rem;padding:.76rem .95rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);background:var(--card);
+  font-family:'Manrope',sans-serif;font-size:.85rem;font-weight:600;color:var(--txt2);cursor:pointer;
+  white-space:nowrap;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.qbtn:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-lt)}
+.qbtn:active{transform:scale(.96)}
+
+/* ════════════════════════════════════════════════════════
+   TIME DROPDOWNS (sleep questions)
+════════════════════════════════════════════════════════ */
+.time-drops{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.td-group{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.td-lbl{font-family:'Sora',sans-serif;font-size:.68rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em}
+.td-sel{padding:.7rem .6rem;border:1px solid var(--bdr);border-radius:var(--rsm);
+  background:var(--bg);font-family:'Manrope',sans-serif;font-size:.95rem;font-weight:600;color:var(--txt);cursor:pointer;
+  outline:none;-webkit-appearance:none;appearance:none;transition:border-color .18s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .5rem center;padding-right:1.8rem;min-width:74px}
+.td-sep{font-family:'Sora',sans-serif;font-size:1.2rem;font-weight:700;color:var(--txt3);padding-top:1.3rem}
+.td-sel:focus{border-color:var(--bdr-foc);background-color:var(--card);box-shadow:0 0 0 3px rgba(14,116,144,.12)}
+
+/* ════════════════════════════════════════════════════════
+   RADIO OPTIONS (vertical / grid)
+════════════════════════════════════════════════════════ */
+.opts-col{display:flex;flex-direction:column;gap:.45rem}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+@media(max-width:420px){.opts-grid{grid-template-columns:1fr}}
+.full-width{grid-column:1/-1}
+
+.opt{position:relative}
+.opt input[type=radio]{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.opt-lbl{display:flex;align-items:center;gap:.78rem;padding:.78rem .95rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);cursor:pointer;background:var(--bg);
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+  user-select:none;min-height:50px}
+.opt-lbl:hover{border-color:var(--pri);background:var(--pri-lt)}
+.opt-circle{width:20px;height:20px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
+.opt-circle::after{content:'';width:9px;height:9px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  opacity:0;transform:scale(.3);transition:opacity .15s,transform .18s cubic-bezier(.34,1.56,.64,1)}
+.opt.sel .opt-lbl{border-color:var(--pri);background:var(--pri-lt);box-shadow:0 0 0 3px rgba(14,116,144,.06)}
+.opt.sel .opt-circle{border-color:var(--pri)}
+.opt.sel .opt-circle::after{opacity:1;transform:scale(1)}
+.opt input:focus-visible+.opt-lbl{outline:3px solid var(--pri);outline-offset:2px}
+.opt-en{font-family:'Manrope',sans-serif;font-size:.93rem;font-weight:600;color:var(--txt)}
+.opt-es{font-size:.78rem;color:var(--esp);font-weight:500}
+
+/* ════════════════════════════════════════════════════════
+   CHECKBOX OPTIONS
+════════════════════════════════════════════════════════ */
+.chk-opt{position:relative;margin-bottom:.42rem}
+.chk-opt input[type=checkbox]{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.chk-lbl{display:flex;align-items:center;gap:.78rem;padding:.75rem .95rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);cursor:pointer;background:var(--bg);
+  transition:all .15s;-webkit-tap-highlight-color:transparent;min-height:50px}
+.chk-lbl:hover{border-color:var(--pri);background:var(--pri-lt)}
+.chk-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--bg);transition:all .15s}
+.chk-box i{font-size:.65rem;color:#fff;opacity:0;transition:opacity .15s}
+.chk-opt.sel .chk-lbl{border-color:var(--pri);background:var(--pri-lt);box-shadow:0 0 0 3px rgba(14,116,144,.06)}
+.chk-opt.sel .chk-box{background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));border-color:var(--pri)}
+.chk-opt.sel .chk-box i{opacity:1}
+.chk-opt.exclusive.sel .chk-lbl{border-color:var(--txt2);background:var(--bg2)}
+.chk-opt.exclusive.sel .chk-box{background:var(--txt2);border-color:var(--txt2)}
+.chk-en{font-family:'Manrope',sans-serif;font-size:.93rem;font-weight:600;color:var(--txt)}
+.chk-es{font-size:.78rem;color:var(--esp);font-weight:500}
+
+/* ════════════════════════════════════════════════════════
+   YES/NO BUTTONS
+════════════════════════════════════════════════════════ */
+.yn-row{display:flex;gap:.5rem}
+.yn-opt{flex:1;position:relative}
+.yn-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.yn-lbl{display:flex;align-items:center;justify-content:center;padding:.78rem 1rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);background:var(--bg);
+  font-family:'Sora',sans-serif;font-size:.95rem;font-weight:600;color:var(--txt2);cursor:pointer;
+  transition:all .15s;min-height:52px;-webkit-tap-highlight-color:transparent;letter-spacing:-.005em}
+.yn-lbl:hover{border-color:var(--pri);background:var(--pri-lt);color:var(--pri)}
+.yn-opt.sel .yn-lbl{background:var(--pri-lt);border-color:var(--pri);color:var(--pri);
+  box-shadow:0 0 0 3px rgba(14,116,144,.08)}
+.yn-opt input:focus-visible+.yn-lbl{outline:3px solid var(--pri);outline-offset:2px}
+
+/* ════════════════════════════════════════════════════════
+   HORIZONTAL SCALE (Likert)
+════════════════════════════════════════════════════════ */
+.scale-wrap{margin-top:.15rem}
+.scale-row{display:flex;align-items:center;gap:.4rem}
+.scale-anchor{font-family:'Manrope',sans-serif;font-size:.66rem;color:var(--txt3);line-height:1.2;flex-shrink:0;width:48px;text-align:center;font-weight:500}
+.scale-circles{flex:1;display:flex;justify-content:space-around}
+.sc-opt{position:relative;text-align:center}
+.sc-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.sc-opt label{display:flex;flex-direction:column;align-items:center;gap:.2rem;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.sc-circle{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--bdr);
+  background:var(--bg);display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:.78rem;font-weight:600;color:var(--txt3);
+  transition:all .18s}
+.sc-opt:hover .sc-circle{border-color:var(--pri);color:var(--pri);background:var(--pri-lt)}
+.sc-opt.sel .sc-circle{background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  border-color:var(--pri);color:#fff;
+  box-shadow:0 2px 8px rgba(6,182,212,.3),0 0 0 3px rgba(14,116,144,.08);
+  transform:scale(1.06)}
+.sc-opt input:focus-visible+label .sc-circle{outline:3px solid var(--pri);outline-offset:2px}
+@media(max-width:380px){.sc-circle{width:30px;height:30px;font-size:.72rem}.scale-anchor{width:36px;font-size:.6rem}}
+
+/* Scale with exempt option */
+.scale-exempt-wrap{margin-top:.15rem}
+.exempt-opt{margin-bottom:.6rem}
+.exempt-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.exempt-lbl{display:inline-flex;align-items:center;gap:.45rem;padding:.42rem .85rem;
+  border:1px solid var(--bdr);border-radius:99px;font-family:'Manrope',sans-serif;font-size:.81rem;font-weight:600;
+  color:var(--txt3);background:var(--bg);cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent}
+.exempt-lbl:hover{border-color:var(--txt2);color:var(--txt2)}
+.exempt-lbl i{font-size:.72rem}
+.exempt-opt.sel .exempt-lbl{background:var(--bg2);border-color:var(--txt2);color:var(--txt)}
+
+/* Multi-item scale section (compact table-like) */
+.multi-scale-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  margin-bottom:.9rem;box-shadow:var(--sh);overflow:hidden}
+.ms-header{padding:1.15rem 1.15rem .85rem;border-bottom:1px solid var(--bdr);
+  background:linear-gradient(180deg,var(--bg),transparent)}
+.ms-header .qlabel{margin-bottom:.1rem}
+.ms-header .qlabel-es{margin-bottom:0}
+.ms-scale-legend{display:flex;align-items:center;gap:.4rem;margin-top:.85rem;flex-wrap:wrap}
+.ms-scale-legend .leg-exempt{font-family:'Sora',sans-serif;font-size:.7rem;font-weight:600;color:var(--txt3);
+  background:var(--bg2);border:1px solid var(--bdr);padding:.22rem .65rem;border-radius:99px;
+  display:inline-flex;align-items:center;gap:.3rem;flex-shrink:0;letter-spacing:.02em}
+.ms-scale-legend .leg-scale{font-family:'Manrope',sans-serif;font-size:.72rem;color:var(--txt3);flex:1;display:flex;
+  justify-content:space-between;min-width:180px;font-weight:500}
+.ms-item{display:flex;align-items:center;gap:.75rem;padding:.78rem 1.15rem;
+  border-bottom:1px solid var(--bg2);transition:background .12s}
+.ms-item:last-child{border-bottom:none}
+.ms-item:hover{background:var(--bg)}
+.ms-item-label{flex:1;min-width:0}
+.ms-item-label .ms-en{font-family:'Manrope',sans-serif;font-size:.87rem;font-weight:600;color:var(--txt);display:block;line-height:1.3}
+.ms-item-label .ms-es{font-size:.76rem;color:var(--esp);font-weight:500;display:block;line-height:1.2;margin-top:.12rem}
+.ms-item-num{font-family:'Sora',sans-serif;font-size:.78rem;font-weight:600;color:var(--pri);flex-shrink:0;width:1.5rem;text-align:right}
+.ms-opts{display:flex;gap:.28rem;flex-shrink:0}
+.ms-sc-opt{position:relative}
+.ms-sc-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.ms-sc-opt label{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--bdr);
+  background:var(--bg);display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:.74rem;font-weight:600;color:var(--txt3);cursor:pointer;transition:all .15s}
+.ms-sc-opt:hover label{border-color:var(--pri);color:var(--pri)}
+.ms-sc-opt.sel label{background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  border-color:var(--pri);color:#fff;box-shadow:0 2px 6px rgba(6,182,212,.3);transform:scale(1.05)}
+.ms-sc-opt.exempt label{border-radius:6px}
+.ms-sc-opt.exempt.sel label{background:var(--bg2);border-color:var(--txt2);color:var(--txt);box-shadow:none;transform:none}
+@media(max-width:540px){
+  .ms-item{flex-wrap:wrap;gap:.5rem}
+  .ms-item-label{width:100%}
+  .ms-opts{width:100%;justify-content:space-around}
+  .ms-sc-opt label{width:38px;height:38px}
+}
+
+/* ════════════════════════════════════════════════════════
+   BRANCHING (text field reveal)
+════════════════════════════════════════════════════════ */
+.branch{max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .3s ease,opacity .25s ease,margin .3s ease;margin-top:0}
+.branch.open{max-height:130px;opacity:1;margin-top:.9rem}
+.branch-box{background:var(--pri-lt);border:1px solid var(--pri-mid);border-radius:var(--rsm);padding:.95rem 1rem}
+.branch-box label{display:block;font-family:'Sora',sans-serif;font-size:.84rem;font-weight:600;color:var(--txt);margin-bottom:.45rem}
+.branch-box label span{color:var(--esp);font-weight:500}
+.branch-inp{width:100%;padding:.7rem .85rem;border:1px solid var(--pri-mid);border-radius:var(--rsm);
+  font-family:'Manrope',sans-serif;font-size:.95rem;color:var(--txt);background:var(--card);outline:none;font-weight:500;
+  transition:border-color .18s,box-shadow .18s}
+.branch-inp:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(14,116,144,.12)}
+
+/* ════════════════════════════════════════════════════════
+   ALCOHOL 8-OPTION (special)
+════════════════════════════════════════════════════════ */
+.alc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem}
+@media(max-width:400px){.alc-grid{grid-template-columns:repeat(2,1fr)}}
+.alc-opt{position:relative}
+.alc-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.alc-lbl{display:flex;align-items:center;justify-content:center;padding:.7rem .5rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);background:var(--bg);
+  font-family:'Sora',sans-serif;font-size:.86rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;
+  min-height:48px;text-align:center;line-height:1.2;letter-spacing:-.005em}
+.alc-lbl:hover{border-color:var(--pri);background:var(--pri-lt);color:var(--pri)}
+.alc-opt.sel .alc-lbl{background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  border-color:var(--pri);color:#fff;box-shadow:0 2px 8px rgba(6,182,212,.3)}
+
+/* ════════════════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════════════════ */
+.footer-outer{position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);
+  border-top:1px solid var(--bdr);box-shadow:0 -4px 24px rgba(15,23,42,.06)}
+.footer-inner{max-width:720px;margin:0 auto;padding:.85rem 1.25rem;
+  display:flex;align-items:center;gap:.6rem}
+.footer-status{flex:1;font-family:'Manrope',sans-serif;font-size:.76rem;color:var(--txt3);display:flex;align-items:center;gap:.4rem;font-weight:500}
+.footer-status i{color:var(--ok);font-size:.7rem}
+.btn-save{display:flex;align-items:center;gap:.4rem;padding:.72rem .95rem;
+  border:1px solid var(--bdr);border-radius:var(--rsm);background:var(--card);
+  font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;color:var(--txt2);cursor:pointer;
+  white-space:nowrap;transition:all .15s;-webkit-tap-highlight-color:transparent;min-height:48px;letter-spacing:-.005em}
+.btn-save:hover{border-color:var(--txt2);color:var(--txt)}
+.btn-submit{display:flex;align-items:center;justify-content:center;gap:.45rem;
+  padding:.72rem 1.4rem;border:none;border-radius:var(--rsm);
+  background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));color:#fff;
+  font-family:'Sora',sans-serif;font-size:.93rem;font-weight:600;cursor:pointer;letter-spacing:-.005em;
+  transition:transform .12s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(6,182,212,.3),inset 0 1px 0 rgba(255,255,255,.2);
+  min-height:48px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn-submit:hover{box-shadow:0 6px 20px rgba(6,182,212,.4),inset 0 1px 0 rgba(255,255,255,.2);transform:translateY(-1px)}
+.btn-submit:active{transform:scale(.97)}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);
+  padding:.65rem 1.15rem;border-radius:99px;font-family:'Sora',sans-serif;font-size:.83rem;font-weight:600;color:#fff;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;
+  z-index:999;display:flex;align-items:center;gap:.4rem;max-width:calc(100vw - 2.5rem);
+  box-shadow:0 8px 24px rgba(15,23,42,.2)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Success overlay */
+.success-overlay{position:fixed;inset:0;background:rgba(246,247,251,.97);backdrop-filter:blur(8px);z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1rem;opacity:0;pointer-events:none;transition:opacity .3s}
+.success-overlay.show{opacity:1;pointer-events:all}
+.success-circle{width:84px;height:84px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pri-grad-1),var(--pri-grad-2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;color:#fff;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+  box-shadow:0 12px 40px rgba(6,182,212,.4)}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.success-overlay h2{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:600;letter-spacing:-.01em}
+.success-overlay p{font-family:'Manrope',sans-serif;font-size:.9rem;color:var(--txt2);text-align:center;max-width:280px;font-weight:500}
+
+/* Responsive misc */
+@media(max-width:480px){
+  main{padding:1.25rem .9rem}
+  .qcard{padding:1.1rem .9rem}
+  .footer-inner{padding:.8rem .9rem}
+  .btn-submit{font-size:.88rem;padding:.7rem 1rem}
+  .btn-save span{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ═══════════════════════════════════════════════ -->
+<header class="hdr">
+  <div class="hdr-row">
+    <div class="hdr-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+    <span class="hdr-title">Day 11 · Thursday Daily Survey</span>
+    <button class="jump-btn" onclick="toggleJump()" aria-label="Jump to section">
+      <i class="fa-solid fa-list"></i> Sections
+    </button>
+    <span class="hdr-prog" id="progText">0 of 16</span>
+  </div>
+  <div class="prog-rail"><div class="prog-fill" id="progFill"></div></div>
+</header>
+
+<!-- Jump navigation panel -->
+<div class="jump-panel" id="jumpPanel" role="navigation" aria-label="Jump to section"></div>
+
+<!-- ══ AUTO-SAVE PILL ═══════════════════════════════════════ -->
+<div class="save-pill" id="savePill"><i class="fa-solid fa-circle-check"></i> Saved</div>
+
+<!-- ══ RESTORE BANNER ═══════════════════════════════════════ -->
+<div class="restore-wrap" id="restoreBanner">
+  <div class="restore-box">
+    <i class="fa-solid fa-rotate-left"></i>
+    <div class="restore-txt"><strong>You have unsaved answers.</strong> Restore your previous responses?</div>
+    <div class="restore-acts">
+      <button class="rbtn rbtn-y" onclick="restoreAnswers()">Restore</button>
+      <button class="rbtn rbtn-n" onclick="dismissRestore()">Start fresh</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════ -->
+<main>
+  <div class="instr">
+    <div class="instr-icon"><i class="fa-solid fa-circle-info"></i></div>
+    <div>
+      <p><strong>Please complete the survey below</strong> — all responses are confidential. Thank you!</p>
+      <p class="es">Favor de tomar esta encuesta — todas tus respuestas son confidenciales. ¡Gracias!</p>
+    </div>
+  </div>
+  <form id="surveyForm" novalidate>
+    <div id="survey-root"></div>
+  </form>
+</main>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<div class="footer-outer">
+  <div class="footer-inner">
+    <div class="footer-status"><i class="fa-solid fa-cloud-arrow-up"></i><span id="footerTxt">Auto-saving as you go</span></div>
+    <button class="btn-save" onclick="manualSave()" type="button"><i class="fa-regular fa-floppy-disk"></i><span> Save &amp; Return</span></button>
+    <button class="btn-submit" onclick="submitSurvey()" type="button"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="success-overlay" id="successOverlay">
+  <div class="success-circle"><i class="fa-solid fa-check"></i></div>
+  <h2>Submitted!</h2>
+  <p>Thank you — your responses have been saved securely.</p>
+  <p class="es" style="margin-top:.2rem">¡Gracias! Tus respuestas han sido guardadas.</p>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   SHARED OPTION SETS
+═══════════════════════════════════════════════════════════ */
+const A5 = [ // Agree 5-point
+  {v:'1',en:'Strongly disagree',es:'Totalmente en desacuerdo'},
+  {v:'2',en:'Disagree',es:'En desacuerdo'},
+  {v:'3',en:'Neutral/Depends',es:'Neutral/Depende'},
+  {v:'4',en:'Agree',es:'De acuerdo'},
+  {v:'5',en:'Strongly agree',es:'Totalmente de acuerdo'},
+];
+const F5 = [ // Frequency 5-point
+  {v:'1',en:'Not at all',es:'Para nada'},
+  {v:'2',en:'A little bit',es:'Un poco'},
+  {v:'3',en:'Somewhat',es:'Algo'},
+  {v:'4',en:'Quite a bit',es:'Bastante'},
+  {v:'5',en:'Very much',es:'Mucho'},
+];
+const H5 = [ // Health 5-point
+  {v:'1',en:'Poor',es:'Mala'},{v:'2',en:'Fair',es:'Algo mala'},
+  {v:'3',en:'Good',es:'Buena'},{v:'4',en:'Very good',es:'Muy buena'},{v:'5',en:'Excellent',es:'Excelente'},
+];
+const HG5 = [ // Health general
+  {v:'1',en:'Poor',es:'Mala'},{v:'2',en:'Fair',es:'Algo mala'},
+  {v:'3',en:'Good',es:'Bien'},{v:'4',en:'Very good',es:'Muy bien'},{v:'5',en:'Excellent',es:'Excelente'},
+];
+const S5 = [ // Support 5-point
+  {v:'1',en:'Not at all',es:'Para nada'},{v:'2',en:'A little bit',es:'Un poco'},
+  {v:'3',en:'Some',es:'Algo'},{v:'4',en:'Quite a bit',es:'Bastante'},{v:'5',en:'A lot',es:'Mucho'},
+];
+const ST5 = [ // Stress 5-point (values 2-6)
+  {v:'2',en:'Not stressful',es:'Nada estresante'},
+  {v:'3',en:'A little stressful',es:'Un poco estresante'},
+  {v:'4',en:'Somewhat stressful',es:'Algo estresante'},
+  {v:'5',en:'Very stressful',es:'Muy estresante'},
+  {v:'6',en:'Extremely stressful',es:'Extremadamente estresante'},
+];
+const ALC8 = [
+  {v:'0',en:'None',es:'Ninguno'},{v:'1',en:'One',es:'Uno'},{v:'2',en:'Two',es:'Dos'},
+  {v:'3',en:'Three',es:'Tres'},{v:'4',en:'Four',es:'Cuatro'},{v:'5',en:'Five',es:'Cinco'},
+  {v:'6',en:'Six',es:'Seis'},{v:'7',en:'More than six',es:'Más de seis'},
+];
+
+/* Stress items (shared between 1A mother / 1B father) */
+const STRESS_ITEMS = [
+  {en:'Phone calls, text messages, or voicemails',es:'Llamadas telefónicas, mensajes de texto, o correos de voz'},
+  {en:'The use of products',es:'El uso de productos'},
+  {en:'Entertainment (television shows, movies, music)',es:'Entretenimiento (programas de televisión, películas y música)'},
+  {en:'The use of technology (computer, Internet, smartphone, tablet)',es:'El uso de tecnología (computadora, Internet, celular, tableta)'},
+  {en:'Receipts, prices, or other things at a store',es:'Recibos de pago, precios u otras cosas en una tienda'},
+  {en:'Work notices, manuals, or instructions for your {parent}\'s job',es:'Avisos del trabajo, manuales, o instrucciones para el trabajo de su {parent_es}'},
+  {en:'Applications (for job, housing, insurance)',es:'Solicitudes (de trabajo, estancia, seguro)'},
+  {en:'Government documents or other legal documents',es:'Documentos del gobierno u otros documentos legales'},
+  {en:'Bills (telephone, gas, water, or electricity)',es:'Facturas (recibos de teléfono, gas, agua, o electricidad)'},
+  {en:'In-person conversations',es:'Conversaciones en persona'},
+  {en:'Signs or directions',es:'Letreros o direcciones'},
+];
+
+/* Attitude items (shared between 2A mother / 2B father) */
+const ATTITUDE_ITEMS = [
+  {en:'When I translated for my {parent} today, it strengthened my Spanish skills',es:'Cuando traduje para mi {parent_es} el día de hoy, fortalecí mis habilidades en español'},
+  {en:'When I translated for my {parent} today, it strengthened my English skills',es:'Cuando traduje para mi {parent_es} el día de hoy, fortalecí mis habilidades en inglés'},
+  {en:'I felt independent and mature when I translated for my {parent} today',es:'Me sentí independiente y maduro/a cuando traduje para mi {parent_es} el día de hoy'},
+  {en:'I felt useful (that my help was necessary) because I translated for my {parent} today',es:'Me sentí útil (que mi ayuda fue necesaria) porque traduje para mi {parent_es} el día de hoy'},
+  {en:'I was in situations where I put into practice my social skills (interactions with others) because I translated for my {parent} today',es:'Me encontré en situaciones donde practiqué mis habilidades sociales (interacciones con otros) porque traduje para mi {parent_es} el día de hoy'},
+  {en:'I was good at translating for my {parent} today',es:'Fui bueno/a al traducir para mi {parent_es} el día de hoy'},
+  {en:'I was skilled at translating for my {parent} today',es:'Fui hábil (experto/a) al traducir para mi {parent_es} el día de hoy'},
+  {en:'I translated correctly for my {parent} today',es:'Traduje correctamente para mi {parent_es} el día de hoy'},
+  {en:'I desire to (want to) help my {parent} more because I translated for {pronoun} today',es:'Deseo (quiero) ayudarle más a mi {parent_es} porque traduje para {pronoun_es} el día de hoy'},
+  {en:'I felt a close bond to my {parent} because I translated for {pronoun} today',es:'Me sentí cercano/a a mi {parent_es} porque traduje para {pronoun_es} el día de hoy'},
+  {en:"I thought my {parent}'s opinion was important because I translated for {pronoun} today",es:'Pensé que la opinión de mi {parent_es} era importante porque traduje para {pronoun_es} el día de hoy'},
+  {en:'I felt more knowledgeable (know more) than my {parent} because I translated for {pronoun} today',es:'Sentí que era más inteligente (sé más) que mi {parent_es} porque traduje para {pronoun_es} el día de hoy'},
+  {en:'My {parent} was not in control of the situation when {pronoun_subj} asked me to translate for {pronoun} today',es:'Mi {parent_es} no estaba en control de la situación cuando me pidió que tradujera para {pronoun_es} el día de hoy'},
+  {en:"I felt I was my {parent}'s protector because I translated for {pronoun} today",es:'Sentí que yo era el/la protector/a de mi {parent_es} porque traduje para {pronoun_es} el día de hoy'},
+  {en:"I was aware of my {parent}'s problems because I translated for {pronoun} today",es:'Estuve consciente de los problemas de mi {parent_es} porque traduje para {pronoun_es} el día de hoy'},
+  {en:'I became impatient when my {parent} asked me to translate for {pronoun} today',es:'Perdí la paciencia cuando mi {parent_es} me pidió que tradujera para {pronoun_es} el día de hoy'},
+  {en:'I felt desperation when my {parent} asked me to translate for {pronoun} today',es:'Sentí desesperación cuando mi {parent_es} me pidió que tradujera para {pronoun_es} el día de hoy'},
+  {en:'I would rather have done other things than translate for my {parent} today',es:'Hubiera preferido hacer otras cosas que traducir para mi {parent_es} el día de hoy'},
+  {en:'Being a translator for my {parent} was important to who I was today',es:'Ser traductor/a para mi {parent_es} fue importante para quien fui el día de hoy'},
+  {en:'A part of who I was today was being a translator for my {parent}',es:'Parte de quien fui el día de hoy fue ser traductor/a para mi {parent_es}'},
+  {en:'A key part of how I saw myself today was being a translator for my {parent}',es:'Una parte clave de cómo me vi el día de hoy fue ser un/a traductor/a para mi {parent_es}'},
+];
+
+/* Father stress items differ from mother in items 2, 6, 7, 8 */
+const STRESS_ITEMS_F = [
+  {en:'Phone calls, text messages, or voicemails (for your father)',es:'Llamadas telefónicas, mensajes de texto, o correos de voz (para su padre)'},
+  {en:'Explaining the use of products (for your father)',es:'Explicando el uso de productos (para su padre)'},
+  {en:'Entertainment (television shows, movies, music) (for your father)',es:'Entretenimiento (programas de televisión, películas y música) (para su padre)'},
+  {en:'Use of technology (computer, Internet, smartphone, tablet) (for your father)',es:'Uso de tecnología (computadora, Internet, celular, tableta) (para su padre)'},
+  {en:'Receipts, prices, or other things at a store (for your father)',es:'Recibos de pago, precios u otras cosas en una tienda (para su padre)'},
+  {en:"Explaining work notices, manuals, or instructions for your father's job",es:'Explicando avisos del trabajo, manuales, o instrucciones para el trabajo de su padre'},
+  {en:'Filling out applications (for job, housing, insurance) (for your father)',es:'Llenando solicitudes (de trabajo, estancia, seguro) (para su padre)'},
+  {en:'Filling out government documents or other legal documents (for your father)',es:'Llenando documentos del gobierno u otros documentos legales (para su padre)'},
+  {en:'Bills (telephone, gas, water, or electricity) (for your father)',es:'Facturas (recibos de teléfono, gas, agua, o electricidad) (para su padre)'},
+  {en:'In-person conversations (for your father)',es:'Conversaciones en persona (para su padre)'},
+  {en:'Signs or directions (for your father)',es:'Letreros o direcciones (para su padre)'},
+];
+
+/* Section 7B Q1 uses "(problematic)" suffix on all scale labels */
+const F5_PROB = [
+  {v:'1',en:'Not at all (problematic)',es:'Para nada (problemático)'},
+  {v:'2',en:'A little bit (problematic)',es:'Un poco (problemático)'},
+  {v:'3',en:'Somewhat (problematic)',es:'Algo (problemático)'},
+  {v:'4',en:'Quite a bit (problematic)',es:'Bastante (problemático)'},
+  {v:'5',en:'Very much (problematic)',es:'Mucho/Muy (problemático)'},
+];
+
+const MOTHER = {parent:'mother',parent_es:'madre',pronoun:'her',pronoun_es:'ella',pronoun_subj:'she',
+  didnt_en:"I didn't translate for my mother today",didnt_es:'No traduje para mi madre hoy',
+  nointeract_en:'I did not interact with my mother today',nointeract_es:'Yo no interactué con mi madre hoy'};
+const FATHER = {parent:'father',parent_es:'padre',pronoun:'him',pronoun_es:'él',pronoun_subj:'he',
+  didnt_en:"I didn't translate for my father today",didnt_es:'No traduje para mi padre hoy',
+  nointeract_en:'I did not interact with my father today',nointeract_es:'Yo no interactué con mi padre hoy'};
+
+function sub(str, p) {
+  return str.replace(/{parent}/g,p.parent).replace(/{parent_es}/g,p.parent_es)
+    .replace(/{pronoun_subj}/g,p.pronoun_subj).replace(/{pronoun_es}/g,p.pronoun_es)
+    .replace(/{pronoun}/g,p.pronoun);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION DEFINITIONS
+═══════════════════════════════════════════════════════════ */
+const SECTIONS = [
+  {id:'basics',  title:'Basic Information',              titleEs:'Información Básica'},
+  {id:'fortune', title:'Fortune Decks',                  titleEs:'Barajas de Fortuna'},
+  {id:'sleep',   title:'Sleep',                          titleEs:'Sueño'},
+  {id:'s1a',     title:'Section 1A — Mother',            titleEs:'Sección 1A — Madre'},
+  {id:'s1b',     title:'Section 1B — Father',            titleEs:'Sección 1B — Padre'},
+  {id:'s2a',     title:'Section 2A — Mother Attitudes',  titleEs:'Sección 2A'},
+  {id:'s2b',     title:'Section 2B — Father Attitudes',  titleEs:'Sección 2B'},
+  {id:'s3',      title:'Section 3 — Cultural Identity',  titleEs:'Sección 3'},
+  {id:'s4a',     title:'Section 4A — Mother Parenting',  titleEs:'Sección 4A'},
+  {id:'s4b',     title:'Section 4B — Father Parenting',  titleEs:'Sección 4B'},
+  {id:'s5',      title:'Section 5 — Emotions',           titleEs:'Sección 5 — Emociones'},
+  {id:'s6',      title:'Section 6 — Discrimination',     titleEs:'Sección 6'},
+  {id:'s7a',     title:'Section 7A — Physical Symptoms', titleEs:'Sección 7A'},
+  {id:'s7b',     title:'Section 7B — Financial',         titleEs:'Sección 7B — Financiero'},
+  {id:'s8',      title:'Section 8 — Health & Support',   titleEs:'Sección 8'},
+  {id:'s9',      title:'Section 9 — Daily Behaviors',    titleEs:'Sección 9'},
+];
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════════════════════ */
+function cardHead(id, label, labelEs, num, required){
+  const chip = required ? '<span class="req-chip"><i class="fa-solid fa-asterisk" style="font-size:.5rem"></i> Required</span>' : '';
+  const numStr = num ? `<span class="qnum">${num}.</span>` : '';
+  return `<div class="qcard-head"><div>
+    <span class="qlabel">${numStr}${label}${chip}</span>
+    <span class="qlabel-es">${labelEs}</span>
+  </div><div class="atick"><i class="fa-solid fa-check"></i></div></div>`;
+}
+
+function scaleRow(opts, group, lo, hi){
+  const circles = opts.map(o=>`
+    <div class="sc-opt" data-g="${group}" data-v="${o.v}">
+      <input type="radio" name="${group}" value="${o.v}" id="${group}-${o.v}">
+      <label for="${group}-${o.v}"><div class="sc-circle">${o.v}</div></label>
+    </div>`).join('');
+  return `<div class="scale-wrap"><div class="scale-row">
+    <span class="scale-anchor">${lo}</span>
+    <div class="scale-circles">${circles}</div>
+    <span class="scale-anchor">${hi}</span>
+  </div></div>`;
+}
+
+function scaleWithExempt(opts, group, exemptVal, exemptEnLabel, exemptEsLabel, lo, hi){
+  return `<div class="scale-exempt-wrap">
+    <div class="exempt-opt" data-g="${group}" data-v="${exemptVal}" style="position:relative">
+      <input type="radio" name="${group}" value="${exemptVal}" id="${group}-ex">
+      <label class="exempt-lbl" for="${group}-ex"><i class="fa-solid fa-ban"></i>${exemptEnLabel} / ${exemptEsLabel}</label>
+    </div>
+    ${scaleRow(opts, group, lo, hi)}
+  </div>`;
+}
+
+function ynRow(group, showNo=true){
+  const noBtn = showNo ? `<div class="yn-opt" data-g="${group}" data-v="2" style="position:relative">
+    <input type="radio" name="${group}" value="2" id="${group}-2">
+    <label class="yn-lbl" for="${group}-2">No / No</label>
+  </div>` : '';
+  return `<div class="yn-row">
+    <div class="yn-opt" data-g="${group}" data-v="1" style="position:relative">
+      <input type="radio" name="${group}" value="1" id="${group}-1">
+      <label class="yn-lbl" for="${group}-1">Yes / Sí</label>
+    </div>${noBtn}
+  </div>`;
+}
+
+function radioOpts(opts, group, layout='col', singleFullWidth=false){
+  const wrap = layout==='grid' ? 'opts-grid' : 'opts-col';
+  const items = opts.map((o,i)=>{
+    const fw = singleFullWidth && opts.length===7 && i===6 ? ' full-width' : '';
+    return `<div class="opt${fw}" data-g="${group}" data-v="${o.v}" style="position:relative">
+      <input type="radio" name="${group}" value="${o.v}" id="${group}-${o.v}">
+      <label class="opt-lbl" for="${group}-${o.v}">
+        <span class="opt-circle"></span>
+        <span><span class="opt-en">${o.en}</span><br><span class="opt-es">${o.es}</span></span>
+      </label>
+    </div>`;
+  }).join('');
+  return `<div class="${wrap}">${items}</div>`;
+}
+
+function checkboxOpts(opts, group){
+  return opts.map(o=>`
+    <div class="chk-opt${o.exclusive?' exclusive':''}" data-g="${group}" data-v="${o.v}" data-exclusive="${o.exclusive?'1':'0'}" style="position:relative">
+      <input type="checkbox" name="${group}" value="${o.v}" id="${group}-${o.v}">
+      <label class="chk-lbl" for="${group}-${o.v}">
+        <span class="chk-box"><i class="fa-solid fa-check"></i></span>
+        <span><span class="chk-en">${o.en}</span><br><span class="chk-es">${o.es}</span></span>
+      </label>
+    </div>`).join('');
+}
+
+function alcGrid(group){
+  const labels = ['None/Ninguno','One/Uno','Two/Dos','Three/Tres','Four/Cuatro','Five/Cinco','Six/Seis','More than six / Más de seis'];
+  return `<div class="alc-grid">${labels.map((lbl,i)=>`
+    <div class="alc-opt" data-g="${group}" data-v="${i}" style="position:relative">
+      <input type="radio" name="${group}" value="${i}" id="${group}-${i}">
+      <label class="alc-lbl" for="${group}-${i}">${lbl}</label>
+    </div>`).join('')}</div>`;
+}
+
+function resetRow(group){
+  return `<div class="reset-row"><button type="button" class="rlnk" onclick="resetGroup('${group}')">Reset / Restablecer</button></div>`;
+}
+
+function errSlot(id){
+  return `<div class="ferr" id="err-${id}"><i class="fa-solid fa-triangle-exclamation"></i> This field is required.</div>`;
+}
+
+function secHdr(sec){
+  return `<div class="sec-hdr" id="sec-${sec.id}">
+    <div class="sec-pip"></div>
+    <span class="sec-title">${sec.title} <small class="es" style="font-size:.8rem;font-weight:500">/ ${sec.titleEs}</small></span>
+    <div class="sec-rule"></div>
+  </div>`;
+}
+
+function note(en, es){
+  return `<div class="sec-note"><p>${en}</p><p class="es">${es}</p></div>`;
+}
+
+/* Generic question card */
+function qcard(id, label, labelEs, body, opts={}){
+  const {num, required, reset, error, section='', extraClass=''} = opts;
+  return `<div class="qcard${extraClass}" id="card-${id}" data-section="${section}">
+    ${cardHead(id, label, labelEs, num, required)}
+    ${body}
+    ${reset ? resetRow(id) : ''}
+    ${error ? errSlot(id) : ''}
+  </div>`;
+}
+
+/* ─── Multi-item scale section (compact matrix) ─── */
+function multiScaleCard(label, labelEs, items, group, exemptLabel, scaleOpts, loLabel, hiLabel, section){
+  const header = `<div class="ms-header">
+    <span class="qlabel">${label}</span>
+    <span class="qlabel-es">${labelEs}</span>
+    <div class="ms-scale-legend">
+      <span class="leg-exempt"><i class="fa-solid fa-ban"></i> ${exemptLabel}</span>
+      <span class="leg-scale"><span>${loLabel}</span><span>←──→</span><span>${hiLabel}</span></span>
+    </div>
+  </div>`;
+  const rows = items.map((item, i)=>{
+    const n = i+1;
+    const gid = `${group}${n}`;
+    const exemptV = scaleOpts[0].v==='2' ? '1' : '0'; // stress: exempt=1; attitude: exempt=0
+    const opts2 = scaleOpts.map(o=>`
+      <div class="ms-sc-opt" data-g="${gid}" data-v="${o.v}">
+        <input type="radio" name="${gid}" value="${o.v}" id="${gid}-${o.v}">
+        <label for="${gid}-${o.v}">${o.v}</label>
+      </div>`).join('');
+    const exemptOpt = `<div class="ms-sc-opt exempt" data-g="${gid}" data-v="${exemptV}">
+      <input type="radio" name="${gid}" value="${exemptV}" id="${gid}-ex">
+      <label for="${gid}-ex" title="${exemptLabel}"><i class="fa-solid fa-ban" style="font-size:.65rem"></i></label>
+    </div>`;
+    return `<div class="ms-item" id="card-${gid}" data-section="${section}">
+      <span class="ms-item-num">${n}.</span>
+      <div class="ms-item-label">
+        <span class="ms-en">${item.en}</span>
+        <span class="ms-es">${item.es}</span>
+      </div>
+      <div class="ms-opts">${exemptOpt}${opts2}</div>
+    </div>`;
+  }).join('');
+  return `<div class="multi-scale-card" data-section="${section}">${header}${rows}</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUILD SURVEY HTML
+═══════════════════════════════════════════════════════════ */
+function buildSurvey(){
+  const el = document.getElementById('survey-root');
+  let html = '';
+
+  /* ── BASICS ─────────────────────────────────────────── */
+  html += secHdr(SECTIONS[0]);
+  html += qcard('t11date',"Today's date",'Fecha de hoy',`
+    <div class="field-row">
+      <div class="field-wrap"><i class="fi fa-regular fa-calendar"></i>
+        <input class="fi-inp" type="date" id="t11date" name="t11date" autocomplete="off">
+      </div>
+      <button type="button" class="qbtn" onclick="setToday()"><i class="fa-solid fa-calendar-day"></i> Today / Hoy</button>
+    </div>
+    <p class="auto-note"><i class="fa-solid fa-circle-check"></i> Auto-filled — change if needed.</p>`,
+    {section:'basics'});
+
+  html += qcard('t11strti','Start time','Hora de inicio',`
+    <div class="field-row">
+      <div class="field-wrap"><i class="fi fa-regular fa-clock"></i>
+        <input class="fi-inp" type="time" id="t11strti" name="t11strti" autocomplete="off" aria-required="true">
+      </div>
+      <button type="button" class="qbtn" onclick="setNow()"><i class="fa-solid fa-stopwatch"></i> Now / Ahora</button>
+    </div>
+    <p class="auto-note"><i class="fa-solid fa-circle-check"></i> Auto-filled — change if needed.</p>`,
+    {required:true, error:true, section:'basics'});
+
+  html += qcard('t11dowee',"Today's day of the week",'Día de la semana de hoy',
+    radioOpts([
+      {v:'1',en:'Monday',es:'Lunes'},{v:'2',en:'Tuesday',es:'Martes'},
+      {v:'3',en:'Wednesday',es:'Miércoles'},{v:'4',en:'Thursday',es:'Jueves'},
+      {v:'5',en:'Friday',es:'Viernes'},{v:'6',en:'Saturday',es:'Sábado'},
+      {v:'7',en:'Sunday',es:'Domingo'},
+    ],'t11dowee','grid',true) +
+    `<div class="auto-hint"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-selected from your date — change if needed.</div>` +
+    resetRow('t11dowee'),
+    {section:'basics'});
+
+  html += qcard('t11sexo','Sex','Sexo',
+    radioOpts([
+      {v:'1',en:'Male',es:'Hombre'},{v:'2',en:'Female',es:'Mujer'},{v:'3',en:'Other',es:'Otro'},
+    ],'t11sexo') +
+    `<div class="branch" id="branch-t11sexo"><div class="branch-box">
+      <label for="t11qsexo">Please specify <span>/ Por favor especifique (Sex / Sexo)</span></label>
+      <input type="text" class="branch-inp" id="t11qsexo" name="t11qsexo" placeholder="Type here…" autocomplete="off">
+    </div></div>` + resetRow('t11sexo'),
+    {section:'basics'});
+
+  /* ── FORTUNE DECKS ──────────────────────────────────── */
+  html += secHdr(SECTIONS[1]);
+  html += `<div class="game-card">
+    <h3><i class="fa-solid fa-gamepad" style="margin-right:.4rem"></i>Fortune Decks / Barajas de Fortuna</h3>
+    <p>Please make sure to play Fortune Decks in <strong>ONE SITTING</strong> by clicking the game link. Play in your preferred language.</p>
+    <p class="es">Por favor juegue Barajas de Fortuna en una <strong>SOLA SENTADA</strong>. Juegue en su idioma preferido.</p>
+    <a href="#" class="game-link"><i class="fa-solid fa-play"></i> Play Fortune Decks / Jugar Barajas de Fortuna</a>
+  </div>`;
+
+  html += qcard('t11fdlang','Do you want to play Fortune Decks in English or Spanish?',
+    '¿Prefiere jugar Barajas de Fortuna en español o inglés?',
+    radioOpts([
+      {v:'1',en:'Fortune Decks in English',es:'Barajas de Fortuna en inglés'},
+      {v:'2',en:'Fortune Decks in Spanish',es:'Barajas de Fortuna en español'},
+    ],'t11fdlang') + resetRow('t11fdlang'),
+    {section:'fortune'});
+
+  html += qcard('t11port',
+    'Playing the Brain Games requires you to have vertical (portrait) mode on. Can you confirm that your vertical (portrait) mode lock is on?',
+    'Jugar los Juegos Mentales requiere que tenga la pantalla en modo vertical. ¿Puede confirmar que el bloqueo de orientación vertical esté activado?',
+    radioOpts([{v:'1',en:'Yes, I confirm that vertical (portrait) mode is on',es:'Sí, confirmo que tengo activado el modo vertical'}],'t11port') + resetRow('t11port'),
+    {section:'fortune'});
+
+  html += qcard('t11fdiss',
+    'Did you encounter any issues while playing Fortune Decks (e.g., internet connection, lagging, frozen screen, unable to open the game link, etc.)?',
+    '¿Tuvo problemas mientras jugó Barajas de Fortuna (p.ej., conexión de internet, retraso, pantalla congelada, incapaz de acceder el enlace del juego, etc.)?',
+    ynRow('t11fdiss') + resetRow('t11fdiss'),
+    {section:'fortune'});
+
+  /* ── SLEEP ──────────────────────────────────────────── */
+  html += secHdr(SECTIONS[2]);
+  html += qcard('t11slq','How would you rate the quality of your sleep last night?',
+    '¿Cómo calificaría la calidad de su sueño anoche?',
+    scaleRow(H5,'t11slq','Poor<br>Mala','Excellent<br>Excelente') + resetRow('t11slq'),
+    {num:1, section:'sleep'});
+
+  html += qcard('t11slt','Last night (Wednesday), at what time did you turn off the lights to sleep?',
+    '¿A qué hora apagó la luz para dormirse anoche (miércoles)?',
+    `<div class="field-row">
+      <div class="field-wrap"><i class="fi fa-regular fa-clock"></i>
+        <input class="fi-inp" type="time" id="t11slt" name="t11slt" autocomplete="off">
+      </div>
+    </div>` + resetRow('t11slt'),
+    {num:2, section:'sleep'});
+
+  html += qcard('t11slfall','Last night (Wednesday), how many minutes did it take for you to fall asleep?',
+    '¿Cuántos minutos le tomó para quedarse dormido/a anoche (miércoles)?',
+    buildDuration('t11slfall'),
+    {num:3, section:'sleep'});
+
+  html += qcard('t11wkt','At what time did you wake up this morning/today?',
+    '¿A qué hora se despertó esta mañana/el día de hoy?',
+    `<div class="field-row">
+      <div class="field-wrap"><i class="fi fa-regular fa-clock"></i>
+        <input class="fi-inp" type="time" id="t11wkt" name="t11wkt" autocomplete="off">
+      </div>
+    </div>` + resetRow('t11wkt'),
+    {num:4, section:'sleep'});
+
+  /* ── SECTION 1A (MOTHER) ────────────────────────────── */
+  html += secHdr(SECTIONS[3]);
+  html += note('Some of the questions in this survey will ask about your mother and father.',
+    'Algunas de las preguntas en esta encuesta preguntarán sobre su madre y padre.');
+
+  html += qcard('t11mtype','When you answer questions about your mother, will you refer to your _________?',
+    'Cuando responda preguntas sobre su madre, ¿se referirá a su _________?',
+    radioOpts([{v:'1',en:'Mother',es:'Madre'},{v:'2',en:'Stepmother',es:'Madrastra'},{v:'3',en:'Other',es:'Otra'}],'t11mtype') +
+    `<div class="branch" id="branch-t11mtype"><div class="branch-box">
+      <label for="t11qmtype">Please specify <span>/ Por favor especifique</span></label>
+      <input type="text" class="branch-inp" id="t11qmtype" name="t11qmtype" placeholder="Type here…">
+    </div></div>` + resetRow('t11mtype'),
+    {section:'s1a'});
+
+  html += note('For the rest of the survey, always think about this same person when answering questions about your "Mother".',
+    'Para el resto de la encuesta, siempre piense en esta misma persona cuando responda preguntas sobre su "Madre".');
+
+  html += qcard('t11mint','I interacted with my mother today:','Yo interactué con mi madre el día de hoy:',
+    checkboxOpts([
+      {v:'0',en:'I did not interact with my mother today',es:'Yo no interactué con mi madre hoy',exclusive:true},
+      {v:'1',en:'In person',es:'En persona'},{v:'2',en:'Video call',es:'Videollamada'},
+      {v:'3',en:'Phone call',es:'Llamada telefónica'},{v:'4',en:'Text message',es:'Mensaje de texto'},
+      {v:'5',en:'Social media',es:'Redes sociales'},{v:'6',en:'Other',es:'Otro'},
+    ],'t11mint'),
+    {section:'s1a'});
+
+  html += qcard('t11mtrans','Did you translate something from English to Spanish for your mother today?',
+    '¿Tradujo algo del inglés al español para su madre el día de hoy?',
+    ynRow('t11mtrans') + resetRow('t11mtrans'),
+    {num:1, section:'s1a'});
+
+  // 11 Stress items for mother
+  const stressM = STRESS_ITEMS.map(s=>({
+    en: sub(s.en, MOTHER) + ' (for your mother)',
+    es: sub(s.es, MOTHER) + ' (para su madre)'
+  }));
+  html += multiScaleCard(
+    'How stressed did you feel when you translated the following things from English to Spanish for your mother today?',
+    '¿Qué tan estresado/a se sintió cuando tradujo lo siguiente del inglés al español para su madre el día de hoy?',
+    stressM, 't11mst', "Didn't translate / No traduje", ST5,
+    'Not stressful', 'Extremely stressful', 's1a'
+  );
+
+  /* ── SECTION 1B (FATHER) ────────────────────────────── */
+  html += secHdr(SECTIONS[4]);
+
+  html += qcard('t11ftype','When you answer questions about your father, will you refer to your _______?',
+    'Cuando responda preguntas sobre su padre, ¿se referirá a su _________?',
+    radioOpts([{v:'1',en:'Father',es:'Padre'},{v:'2',en:'Stepfather',es:'Padrastro'},{v:'3',en:'Other',es:'Otro'}],'t11ftype') +
+    `<div class="branch" id="branch-t11ftype"><div class="branch-box">
+      <label for="t11qftype">Please specify <span>/ Por favor especifique</span></label>
+      <input type="text" class="branch-inp" id="t11qftype" name="t11qftype" placeholder="Type here…">
+    </div></div>` + resetRow('t11ftype'),
+    {section:'s1b'});
+
+  html += note('For the rest of the survey, always think about this same person when answering questions about your "Father".',
+    'Para el resto de la encuesta, siempre piense en esta misma persona cuando responda preguntas sobre su "Padre".');
+
+  html += qcard('t11fint','I interacted with my father today:','Yo interactué con mi padre el día de hoy:',
+    checkboxOpts([
+      {v:'0',en:'I did not interact with my father today',es:'Yo no interactué con mi padre hoy',exclusive:true},
+      {v:'1',en:'In person',es:'En persona'},{v:'2',en:'Video call',es:'Videollamada'},
+      {v:'3',en:'Phone call',es:'Llamada telefónica'},{v:'4',en:'Text message',es:'Mensaje de texto'},
+      {v:'5',en:'Social media',es:'Redes sociales'},{v:'6',en:'Other',es:'Otro'},
+    ],'t11fint'),
+    {section:'s1b'});
+
+  html += qcard('t11ftrans','Did you translate something from English to Spanish for your father today?',
+    '¿Tradujo algo del inglés al español para su padre el día de hoy?',
+    ynRow('t11ftrans') + resetRow('t11ftrans'),
+    {num:1, section:'s1b'});
+
+  const stressF = STRESS_ITEMS_F; // Father items have distinct wording for items 2,6,7,8
+  html += multiScaleCard(
+    'How stressed did you feel when you translated the following things from English to Spanish for your father today?',
+    '¿Qué tan estresado/a se sintió cuando tradujo lo siguiente del inglés al español para su padre el día de hoy?',
+    stressF, 't11fst', "Didn't translate / No traduje", ST5,
+    'Not stressful', 'Extremely stressful', 's1b'
+  );
+
+  /* ── SECTION 2A (MOTHER ATTITUDES) ─────────────────── */
+  html += secHdr(SECTIONS[5]);
+  const attM = ATTITUDE_ITEMS.map(a=>({en:sub(a.en,MOTHER),es:sub(a.es,MOTHER)}));
+  html += multiScaleCard(
+    'How much do you agree with the following statements about translating from English to Spanish for your mother today?',
+    '¿Qué tan de acuerdo está con las siguientes declaraciones sobre traducir del inglés al español para su madre el día de hoy?',
+    attM, 't11mat',
+    "Didn't translate for mother / No traduje para mi madre",
+    A5, 'Strongly disagree', 'Strongly agree', 's2a'
+  );
+
+  /* ── SECTION 2B (FATHER ATTITUDES) ─────────────────── */
+  html += secHdr(SECTIONS[6]);
+  const attF = ATTITUDE_ITEMS.map(a=>({en:sub(a.en,FATHER),es:sub(a.es,FATHER)}));
+  html += multiScaleCard(
+    'How much do you agree with the following statements about translating from English to Spanish for your father today?',
+    '¿Qué tan de acuerdo está con las siguientes declaraciones sobre traducir del inglés al español para su padre el día de hoy?',
+    attF, 't11fat',
+    "Didn't translate for father / No traduje para mi padre",
+    A5, 'Strongly disagree', 'Strongly agree', 's2b'
+  );
+
+  /* ── SECTION 3 (CULTURAL IDENTITY) ─────────────────── */
+  html += secHdr(SECTIONS[7]);
+  const s3q = [
+    {en:'I was comfortable working with people of Mexican origin today',es:'Me sentí cómodo/a trabajando con gente de origen mexicano el día de hoy'},
+    {en:'It was important for me today to maintain or develop cultural practices (way of living or doing things) typically found in people of Mexican origin',es:'Fue importante para mí el día de hoy mantener o desarrollar costumbres típicas (modo de vivir o de hacer las cosas) de la gente de origen mexicano'},
+    {en:'I believed in mainstream (typical) Mexican values (important beliefs) today',es:'Creí en los valores (creencias importantes) populares (típicos) de la cultura mexicana el día de hoy'},
+    {en:'I was interested in having friends of Mexican origin today',es:'Estuve interesado/a en tener amistades de origen mexicano el día de hoy'},
+    {en:'I was comfortable working with U.S. Americans today',es:'Me sentí cómodo/a trabajando con gente estadounidense el día de hoy'},
+    {en:'It was important for me to maintain or develop typical U.S. American cultural practices (way of living or doing things) today',es:'Fue importante para mí mantener o desarrollar las costumbres típicas de la cultura estadounidense (modo de vivir o de hacer las cosas) el día de hoy'},
+    {en:'I believed in mainstream (typical) U.S. American values (important beliefs) today',es:'Creí en los valores (creencias importantes) populares (típicos) de la gente estadounidense el día de hoy'},
+    {en:'I was interested in having U.S. American friends today',es:'Estuve interesado/a en tener amistades estadounidenses el día de hoy'},
+  ];
+  s3q.forEach((q,i)=>{
+    const id=`t11clt${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleRow(A5, id,'Strongly<br>disagree','Strongly<br>agree') + resetRow(id),
+      {num:i+1, section:'s3'});
+  });
+
+  /* ── SECTION 4A (MOTHER PARENTING) ─────────────────── */
+  html += secHdr(SECTIONS[8]);
+  html += `<div class="sec-note"><p><strong>How much do you agree with the following?</strong></p>
+    <p class="es">¿Qué tan de acuerdo está con lo siguiente?</p></div>`;
+  const s4aq = [
+    {en:'Did your mother know when you got home today?',es:'¿Su madre supo cuándo llegó a casa el día de hoy?'},
+    {en:'Did your mother know who you were with when you were out today?',es:'¿Su madre supo con quién estuvo cuando salió el día de hoy?'},
+    {en:'Did your mother give you reasons (explanations) for her decisions today?',es:'¿Su madre le dió razones (explicaciones) acerca de las decisiones que tomó el día de hoy?'},
+    {en:'Did your mother ask you what you thought before making decisions that affected you today?',es:'¿Su madre le preguntó lo que pensaba antes de tomar decisiones que lo/la afectaron el día de hoy?'},
+    {en:'Did your mother let you know that she appreciated you, your ideas, or the things you did today?',es:'¿Su madre le hizo saber que lo/la estimaba, que apreciaba sus ideas o las cosas que hizo el día de hoy?'},
+    {en:'Did your mother help you do something that was important to you today?',es:'¿Su madre lo/la ayudó a hacer algo que era importante para usted el día de hoy?'},
+  ];
+  const noInteractM = [{v:'0',en:'I did not interact with my mother today',es:'Yo no interactué con mi madre hoy'},...A5];
+  s4aq.forEach((q,i)=>{
+    const id=`t11mpar${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleWithExempt(A5, id,'0','Did not interact with mother','No interactué con mi madre',
+        'Strongly<br>disagree','Strongly<br>agree') + resetRow(id),
+      {num:i+1, section:'s4a'});
+  });
+
+  /* ── SECTION 4B (FATHER PARENTING) ─────────────────── */
+  html += secHdr(SECTIONS[9]);
+  html += `<div class="sec-note"><p><strong>How much do you agree with the following?</strong></p>
+    <p class="es">¿Qué tan de acuerdo está con lo siguiente?</p></div>`;
+  const s4bq = [
+    {en:'Did your father know when you got home today?',es:'¿Su padre supo cuándo llegó a casa el día de hoy?'},
+    {en:'Did your father know who you were with when you were out today?',es:'¿Su padre supo con quién estuvo cuando salió el día de hoy?'},
+    {en:'Did your father give you reasons (explanations) for his decisions today?',es:'¿Su padre le dió razones (explicaciones) acerca de las decisiones que tomó el día de hoy?'},
+    {en:'Did your father ask you what you thought before making decisions that affected you today?',es:'¿Su padre le preguntó lo que pensaba antes de tomar decisiones que lo/la afectaron el día de hoy?'},
+    {en:'Did your father let you know that he appreciated you, your ideas, or the things you did today?',es:'¿Su padre le hizo saber que lo/la estimaba, que apreciaba sus ideas o las cosas que hizo el día de hoy?'},
+    {en:'Did your father help you do something that was important to you today?',es:'¿Su padre lo/la ayudó a hacer algo que era importante para usted el día de hoy?'},
+  ];
+  s4bq.forEach((q,i)=>{
+    const id=`t11fpar${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleWithExempt(A5, id,'0','Did not interact with father','No interactué con mi padre',
+        'Strongly<br>disagree','Strongly<br>agree') + resetRow(id),
+      {num:i+1, section:'s4b'});
+  });
+
+  /* ── SECTION 5 (EMOTIONS) ───────────────────────────── */
+  html += secHdr(SECTIONS[10]);
+  html += `<div class="sec-note"><p><strong>Please rate how you felt today using the following emotions.</strong></p>
+    <p class="es">Califique cómo se sintió el día de hoy usando las siguientes emociones.</p></div>`;
+  const s5q = [
+    {en:'Nervous',es:'Nervioso/a'},{en:'On edge',es:'Con los nervios de punta'},
+    {en:'Uneasy',es:'Inquieto/a'},{en:'Discouraged',es:'Desanimado/a'},
+    {en:'Sad',es:'Triste'},{en:'Hopeless',es:'Sin esperanza'},
+  ];
+  s5q.forEach((q,i)=>{
+    const id=`t11emo${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleRow(F5, id,'Not at all<br>Para nada','Very much<br>Mucho') + resetRow(id),
+      {num:i+1, section:'s5'});
+  });
+
+  /* ── SECTION 6 (DISCRIMINATION) ─────────────────────── */
+  html += secHdr(SECTIONS[11]);
+  html += `<div class="sec-note"><p><strong>How much do you agree with the following statements?</strong></p>
+    <p class="es">¿Qué tan de acuerdo está con las siguientes declaraciones?</p></div>`;
+  const s6q = [
+    {en:'I was treated with less respect than other people today',es:'Fui tratado/a con menos respeto que otras personas el día de hoy'},
+    {en:'People thought I was not smart today',es:'La gente pensó que yo no era inteligente el día de hoy'},
+    {en:'People acted like I was dishonest today',es:'La gente actuó como si yo fuera deshonesto/a el día de hoy'},
+    {en:'I was called names or insulted today',es:'Me llamaron nombres negativos o me insultaron el día de hoy'},
+  ];
+  s6q.forEach((q,i)=>{
+    const id=`t11disc${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleRow(A5, id,'Strongly<br>disagree','Strongly<br>agree') + resetRow(id),
+      {num:i+1, section:'s6'});
+  });
+
+  /* ── SECTION 7A (PHYSICAL SYMPTOMS) ─────────────────── */
+  html += secHdr(SECTIONS[12]);
+  html += `<div class="sec-note"><p><strong>Have you experienced any of these physical symptoms today?</strong></p>
+    <p class="es">¿Ha experimentado (sentido) cualquiera de estos síntomas físicos el día de hoy?</p></div>`;
+  const s7aq = [
+    {en:'Headache',es:'Dolor de cabeza'},{en:'Cold/Flu',es:'Resfriado/Gripa'},
+    {en:'Tired',es:'Cansancio'},{en:'Allergies',es:'Alergias'},
+    {en:'Stomachache',es:'Dolor de estómago'},{en:'Other Physical Problems',es:'Otros problemas físicos'},
+  ];
+  s7aq.forEach((q,i)=>{
+    const id=`t11phys${i+1}`;
+    html += qcard(id, q.en, q.es,
+      ynRow(id) + resetRow(id),
+      {num:i+1, section:'s7a'});
+  });
+
+  /* ── SECTION 7B (FINANCIAL) ──────────────────────────── */
+  html += secHdr(SECTIONS[13]);
+  const s7bq = [
+    {en:'How much of a problem did your family have today because your parents did not have enough money to buy things your family needs or wants?',es:'¿Qué tan problemático fue hoy para su familia que sus padres no tuvieran suficiente dinero para comprar cosas que ustedes necesitan o quieren?', scaleOpts: F5_PROB, lo:'Not at all<br>(problematic)', hi:'Very much<br>(problematic)'},
+    {en:'Did you have enough money for clothes, school activities, or things you needed today?',es:'¿Tuvo suficiente dinero para ropa, actividades escolares, o cosas que necesitaba hoy?', scaleOpts: F5, lo:'Not at all<br>Para nada', hi:'Very much<br>Mucho'},
+    {en:'Did you have enough money today for doing things you and your friends like to do, such as going to the movies, eating pizza, etc.?',es:'¿Tuvo suficiente dinero el día de hoy para hacer cosas que les gusta hacer a usted y a sus amigos, como ir al cine, comer pizza, etc.?', scaleOpts: F5, lo:'Not at all<br>Para nada', hi:'Very much<br>Mucho'},
+    {en:'Did you and your parents disagree or get upset about money today?',es:'¿Se molestaron o estuvieron en desacuerdo sus padres y usted por asuntos de dinero el día de hoy?', scaleOpts: F5, lo:'Not at all<br>Para nada', hi:'Very much<br>Mucho'},
+  ];
+  s7bq.forEach((q,i)=>{
+    const id=`t11fin${i+1}`;
+    html += qcard(id, q.en, q.es,
+      scaleRow(q.scaleOpts, id, q.lo, q.hi) + resetRow(id),
+      {num:i+1, section:'s7b'});
+  });
+
+  /* ── SECTION 8 (HEALTH / SUPPORT) ───────────────────── */
+  html += secHdr(SECTIONS[14]);
+  html += qcard('t11health','Overall, how would you rate your health today?',
+    'En general, ¿cómo calificaría su salud hoy?',
+    scaleRow(HG5,'t11health','Poor<br>Mala','Excellent<br>Excelente') + resetRow('t11health'),
+    {num:1, section:'s8'});
+
+  html += `<div class="sec-note"><p><strong>How often did the following happen to you today?</strong></p>
+    <p class="es">¿Con qué frecuencia le sucedió lo siguiente hoy?</p></div>`;
+
+  html += qcard('t11suppfam','Felt supported by your family members','Se sintió apoyado/a por miembros de su familia',
+    scaleRow(S5,'t11suppfam','Not at all<br>Para nada','A lot<br>Mucho') + resetRow('t11suppfam'),
+    {num:'a', section:'s8'});
+
+  html += qcard('t11suppfri','Felt supported by a friend','Se sintió apoyado/a por un/a amigo/a',
+    scaleRow(S5,'t11suppfri','Not at all<br>Para nada','A lot<br>Mucho') + resetRow('t11suppfri'),
+    {num:'b', section:'s8'});
+
+  html += note('Please remember that all of your responses are confidential.',
+    'Por favor recuerde que todas sus respuestas son confidenciales.');
+
+  /* ── SECTION 9 (BEHAVIORS) ───────────────────────────── */
+  html += secHdr(SECTIONS[15]);
+
+  html += qcard('t11alc24',
+    '1a. How many standard alcoholic drinks have you consumed in the past 24 hours? A standard drink is defined as one 12-oz. beer, one 5-oz. glass of wine, or one 1.5-oz. shot of liquor and "drinking" includes beer, wine, wine coolers, alcohol mixed with energy drinks, and hard liquor (e.g., gin, rum, vodka, whiskey).',
+    '¿Cuántas bebidas alcohólicas estándar ha consumido en las últimas 24 horas? Una bebida estándar es definida como una cerveza de 12-oz., una copa de vino de 5-oz., o un trago de licor de 1.5-oz., y "beber" incluye cerveza, vino, sidra/refresco con alcohol, alcohol mezclado con bebidas energéticas y licor fuerte (gin, ron, vodka, whisky).',
+    alcGrid('t11alc24') + resetRow('t11alc24'),
+    {section:'s9'});
+
+  html += qcard('t11alc48',
+    '1b. How many standard alcoholic drinks did you have in the 24 hours before that (2 days ago)?',
+    '¿Cuántas bebidas alcohólicas estándar consumió en las 24 horas antes de eso (hace 2 días)?',
+    alcGrid('t11alc48') + resetRow('t11alc48'),
+    {section:'s9'});
+
+  const s9yn = [
+    {id:'t11exer', num:2, en:'Did you exercise today?', es:'¿Hizo ejercicio el día de hoy?'},
+    {id:'t11smoke', num:4, en:'Did you smoke today?', es:'¿Fumó el día de hoy?'},
+    {id:'t11nic', num:6, en:'Did you use any form of nicotine today?', es:'¿Usó alguna forma de nicotina el día de hoy?'},
+    {id:'t11mj', num:'8a', en:'Did you use marijuana (pot, weed) today?', es:'¿Usó marihuana (mota) el día de hoy?'},
+    {id:'t11mjy', num:'8b', en:'Did you use marijuana (pot, weed) yesterday?', es:'¿Usó marihuana (mota) el día de ayer?'},
+    {id:'t11meds', num:9, en:'Did you take/use any medication in the past 12 hours?', es:'¿Tomó/usó algún medicamento en las últimas 12 horas?'},
+    {id:'t11phone', num:13,
+      en:'Are you using Apple iPhone 15 Pro Max to complete this survey today?',
+      es:'¿Está usando Apple iPhone 15 Pro Max para completar la encuesta el día de hoy?',
+      note_en:'If your cell phone model is not showing up or you changed the cell phone you used today, please select "2 No" to make changes.',
+      note_es:'Si el modelo de su teléfono celular no aparece o cambió el teléfono celular que usó hoy, seleccione "2 No" para hacer cambios.'},
+  ];
+  s9yn.forEach(q=>{
+    const noteHtml = q.note_en
+      ? `<div class="sec-note" style="margin:.65rem 0;padding:.7rem .9rem;border-radius:var(--rsm)"><p style="font-size:.85rem">${q.note_en}</p><p class="es" style="font-size:.8rem;margin-top:.2rem">${q.note_es}</p></div>`
+      : '';
+    html += qcard(q.id, q.en, q.es,
+      noteHtml + ynRow(q.id) + resetRow(q.id),
+      {num:q.num, section:'s9'});
+  });
+
+  html += qcard('t11endi','End time','Hora de finalización',`
+    <div class="field-row">
+      <div class="field-wrap"><i class="fi fa-regular fa-clock"></i>
+        <input class="fi-inp" type="time" id="t11endi" name="t11endi" autocomplete="off" aria-required="true">
+      </div>
+      <button type="button" class="qbtn" onclick="setEndNow()"><i class="fa-solid fa-stopwatch"></i> Now / Ahora</button>
+    </div>`,
+    {required:true, error:true, section:'s9'});
+
+  html += note("Don't forget to keep track of the time you fall asleep and the time you wake up for tomorrow's survey!",
+    '¡No olvide anotar la hora en que se duerme y la hora en que se despierte para la encuesta de mañana!');
+
+  el.innerHTML = html;
+}
+
+/* ─── Time dropdown builders ─── */
+function buildTime12(prefix, ampmDefault){
+  const hrs = Array.from({length:12},(_,i)=>i+1).map(h=>`<option value="${h}">${String(h).padStart(2,'0')}</option>`).join('');
+  const mins = [0,10,20,30,40,50].map(m=>`<option value="${m}">${String(m).padStart(2,'0')}</option>`).join('');
+  const ampm = `<option value="PM"${ampmDefault==='PM'?' selected':''}>PM</option><option value="AM"${ampmDefault==='AM'?' selected':''}>AM</option>`;
+  return `<div class="time-drops">
+    <div class="td-group"><span class="td-lbl">Hour/Hora</span><select class="td-sel" name="${prefix}_h" id="${prefix}_h">${hrs}</select></div>
+    <span class="td-sep">:</span>
+    <div class="td-group"><span class="td-lbl">Min</span><select class="td-sel" name="${prefix}_m" id="${prefix}_m">${mins}</select></div>
+    <div class="td-group"><span class="td-lbl">AM/PM</span><select class="td-sel" name="${prefix}_ampm" id="${prefix}_ampm">${ampm}</select></div>
+  </div>`;
+}
+
+function buildDuration(prefix){
+  const hrs = Array.from({length:13},(_,i)=>i).map(h=>`<option value="${h}">${String(h).padStart(2,'0')}</option>`).join('');
+  const mins = [0,5,10,15,20,25,30,35,40,45,50,55].map(m=>`<option value="${m}">${String(m).padStart(2,'0')}</option>`).join('');
+  return `<div class="time-drops">
+    <div class="td-group"><span class="td-lbl">Hour/Hora</span><select class="td-sel" name="${prefix}_h" id="${prefix}_h">${hrs}</select></div>
+    <span class="td-sep">:</span>
+    <div class="td-group"><span class="td-lbl">Minutes/Minutos</span><select class="td-sel" name="${prefix}_m" id="${prefix}_m">${mins}</select></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INTERACTION & EVENT HANDLING
+═══════════════════════════════════════════════════════════ */
+const SAVE_KEY = 'survey_day11_v3';
+let saveTimer, pillTimer;
+
+/* Event delegation on the survey root */
+function initEvents(){
+  const root = document.getElementById('survey-root');
+
+  root.addEventListener('click', e=>{
+    // Scale options
+    const sc = e.target.closest('.sc-opt,.ms-sc-opt,.exempt-opt');
+    if(sc){ pickOption(sc.dataset.g, sc.dataset.v); return; }
+    // Radio options (vertical)
+    const opt = e.target.closest('.opt');
+    if(opt){ pickOption(opt.dataset.g, opt.dataset.v); return; }
+    // Yes/No
+    const yn = e.target.closest('.yn-opt');
+    if(yn){ pickOption(yn.dataset.g, yn.dataset.v); return; }
+    // Alcohol grid
+    const alc = e.target.closest('.alc-opt');
+    if(alc){ pickOption(alc.dataset.g, alc.dataset.v); return; }
+    // Checkboxes
+    const chk = e.target.closest('.chk-opt');
+    if(chk){ toggleCheckbox(chk); return; }
+  });
+
+  root.addEventListener('input', e=>{
+    const el = e.target;
+    if(el.matches('input[type=date],input[type=time],input[type=text],select,.branch-inp,.td-sel')){
+      const card = el.closest('.qcard');
+      if(card && el.value.trim()) card.classList.add('answered');
+      if(el.id==='t11strti'||el.id==='t11endi'){
+        clearErr(el.id); el.closest('.qcard')?.classList.remove('err-state');
+      }
+      if(el.id==='t11date'){
+        selectDayFromDate(el.value);
+      }
+      onAnyChange();
+    }
+  });
+
+  // Arrow key navigation within scale groups
+  root.addEventListener('keydown', e=>{
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+    const el = e.target.closest('.sc-opt,.opt,.yn-opt');
+    if(!el) return;
+    e.preventDefault();
+    const g = el.dataset.g;
+    const all = [...root.querySelectorAll(`[data-g="${g}"]`)];
+    const idx = all.indexOf(el);
+    const next = (e.key==='ArrowRight'||e.key==='ArrowDown')
+      ? all[(idx+1)%all.length] : all[(idx-1+all.length)%all.length];
+    pickOption(next.dataset.g, next.dataset.v);
+    next.querySelector('input')?.focus();
+  });
+}
+
+function pickOption(group, value){
+  if(!group||!value) return;
+  const inp = document.querySelector(`input[name="${group}"][value="${value}"]`);
+  if(inp) inp.checked = true;
+  // Update visual for all in group
+  document.querySelectorAll(`[data-g="${group}"]`).forEach(el=>{
+    el.classList.toggle('sel', el.dataset.v === value);
+  });
+  // Mark card answered
+  const card = document.querySelector(`[data-g="${group}"]`)?.closest('.qcard,.ms-item');
+  if(card) card.classList.add('answered');
+  // Branching
+  handleBranching(group, value);
+  onAnyChange();
+}
+
+function resetGroup(group){
+  document.querySelectorAll(`input[name="${group}"]`).forEach(r=>r.checked=false);
+  document.querySelectorAll(`[data-g="${group}"]`).forEach(el=>el.classList.remove('sel'));
+  handleBranching(group, null);
+  onAnyChange();
+}
+
+function toggleCheckbox(chkEl){
+  const group = chkEl.dataset.g;
+  const val = chkEl.dataset.v;
+  const isExclusive = chkEl.dataset.exclusive==='1';
+  const inp = chkEl.querySelector('input[type=checkbox]');
+  const wasSelected = chkEl.classList.contains('sel');
+
+  if(isExclusive){
+    // Exclusive: deselect all others, toggle self
+    document.querySelectorAll(`.chk-opt[data-g="${group}"]`).forEach(c=>{
+      c.classList.remove('sel');
+      c.querySelector('input').checked=false;
+    });
+    if(!wasSelected){ chkEl.classList.add('sel'); inp.checked=true; }
+  } else {
+    // Deselect exclusive option
+    document.querySelectorAll(`.chk-opt.exclusive[data-g="${group}"]`).forEach(c=>{
+      c.classList.remove('sel'); c.querySelector('input').checked=false;
+    });
+    chkEl.classList.toggle('sel', !wasSelected);
+    inp.checked = !wasSelected;
+  }
+  const card = chkEl.closest('.qcard');
+  const hasAny = [...document.querySelectorAll(`.chk-opt[data-g="${group}"]`)].some(c=>c.classList.contains('sel'));
+  if(card) card.classList.toggle('answered', hasAny);
+  onAnyChange();
+}
+
+/* ─── Branching ─── */
+function handleBranching(group, value){
+  // sex → specify
+  if(group==='t11sexo'){
+    openBranch('t11sexo', value==='3', 't11qsexo');
+  }
+  // mother type → specify
+  if(group==='t11mtype'){
+    openBranch('t11mtype', value==='3', 't11qmtype');
+  }
+  // father type → specify
+  if(group==='t11ftype'){
+    openBranch('t11ftype', value==='3', 't11qftype');
+  }
+}
+function openBranch(branchId, open, focusId){
+  const el = document.getElementById(`branch-${branchId}`);
+  if(!el) return;
+  el.classList.toggle('open', open);
+  if(open) setTimeout(()=>document.getElementById(focusId)?.focus(), 160);
+  else if(focusId) { const f=document.getElementById(focusId); if(f) f.value=''; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTOFILL
+═══════════════════════════════════════════════════════════ */
+function setToday(){
+  const n=new Date();
+  document.getElementById('t11date').value=`${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`;
+  document.getElementById('card-t11date')?.classList.add('answered');
+  selectDayFromDate(document.getElementById('t11date').value);
+  onAnyChange();
+}
+
+/* Auto-select the matching day-of-week radio for a given YYYY-MM-DD date.
+   Radio values: 1=Mon, 2=Tue, ..., 6=Sat, 7=Sun.
+   JS Date.getDay(): 0=Sun, 1=Mon, ..., 6=Sat. */
+function selectDayFromDate(dateStr){
+  if(!dateStr) return;
+  const parts = dateStr.split('-');
+  if(parts.length !== 3) return;
+  // Construct date in local timezone (avoids UTC offset bug)
+  const d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+  if(isNaN(d.getTime())) return;
+  const jsDay = d.getDay();
+  const v = jsDay === 0 ? '7' : String(jsDay);
+  pickOption('t11dowee', v);
+}
+function setNow(){
+  const n=new Date();
+  document.getElementById('t11strti').value=`${p2(n.getHours())}:${p2(n.getMinutes())}`;
+  clearErr('t11strti'); document.getElementById('card-t11strti')?.classList.remove('err-state');
+  document.getElementById('card-t11strti')?.classList.add('answered'); onAnyChange();
+}
+function setEndNow(){
+  const n=new Date();
+  document.getElementById('t11endi').value=`${p2(n.getHours())}:${p2(n.getMinutes())}`;
+  clearErr('t11endi'); document.getElementById('card-t11endi')?.classList.remove('err-state');
+  document.getElementById('card-t11endi')?.classList.add('answered'); onAnyChange();
+}
+function p2(n){return String(n).padStart(2,'0')}
+
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════════════════════════ */
+function updateProgress(){
+  const sectionsAnswered = new Set();
+  document.querySelectorAll('.qcard.answered,[data-section].ms-item.answered').forEach(el=>{
+    const sec = el.dataset.section;
+    if(sec) sectionsAnswered.add(sec);
+  });
+  // Also check multi-scale cards (ms-items)
+  document.querySelectorAll('.ms-item').forEach(el=>{
+    const g = el.querySelector('[data-g]')?.dataset.g;
+    if(!g) return;
+    const hasAnswer = document.querySelector(`[data-g^="${g}"].sel`);
+    if(hasAnswer && el.dataset.section) sectionsAnswered.add(el.dataset.section);
+  });
+  // Also check checkboxes
+  document.querySelectorAll('.chk-opt.sel').forEach(el=>{
+    const card = el.closest('.qcard');
+    if(card?.dataset.section) sectionsAnswered.add(card.dataset.section);
+  });
+
+  const total = 16;
+  const done = Math.min(sectionsAnswered.size, total);
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progText').textContent = `${done} of ${total}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTO-SAVE
+═══════════════════════════════════════════════════════════ */
+function onAnyChange(){ updateProgress(); clearTimeout(saveTimer); saveTimer=setTimeout(autoSave,900); }
+
+function collectAnswers(){
+  const data={savedAt:new Date().toISOString()};
+  // date/time inputs
+  ['t11date','t11strti','t11endi'].forEach(id=>{const el=document.getElementById(id);if(el)data[id]=el.value;});
+  // text inputs
+  ['t11qsexo','t11qmtype','t11qftype'].forEach(id=>{const el=document.getElementById(id);if(el)data[id]=el.value;});
+  // radio groups (named inputs)
+  document.querySelectorAll('input[type=radio]:checked').forEach(r=>{data[r.name]=r.value;});
+  // checkboxes
+  const cbGroups=new Set();
+  document.querySelectorAll('input[type=checkbox]').forEach(c=>cbGroups.add(c.name));
+  cbGroups.forEach(g=>{
+    data[g]=[...document.querySelectorAll(`input[name="${g}"]:checked`)].map(c=>c.value);
+  });
+  // select dropdowns
+  document.querySelectorAll('select.td-sel').forEach(s=>{if(s.name)data[s.name]=s.value;});
+  return data;
+}
+
+function autoSave(){
+  try{ localStorage.setItem(SAVE_KEY,JSON.stringify(collectAnswers())); showSavePill(); updateFooter('Saved just now'); }
+  catch(e){console.warn('localStorage unavailable');}
+}
+
+function manualSave(){ autoSave(); showToast('<i class="fa-solid fa-floppy-disk"></i> Progress saved — see you later!','ok'); }
+
+/* ─── Restore ─── */
+function checkForDraft(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const d=JSON.parse(raw);
+    if(!d?.savedAt) return;
+    window._draft=d;
+    document.getElementById('restoreBanner').classList.add('show');
+  }catch(e){}
+}
+
+function restoreAnswers(){
+  const d=window._draft; if(!d) return;
+  document.getElementById('restoreBanner').classList.remove('show');
+  // date/time text inputs
+  ['t11date','t11strti','t11endi','t11qsexo','t11qmtype','t11qftype'].forEach(id=>{
+    const el=document.getElementById(id); if(el&&d[id]) el.value=d[id];
+  });
+  // radios
+  Object.keys(d).forEach(name=>{
+    if(typeof d[name]==='string' && d[name]){
+      const inp=document.querySelector(`input[name="${name}"][value="${d[name]}"]`);
+      if(inp&&inp.type==='radio'){ inp.checked=true; pickOption(name,d[name]); }
+    }
+  });
+  // checkboxes
+  Object.keys(d).forEach(name=>{
+    if(Array.isArray(d[name])){ d[name].forEach(val=>{
+      const inp=document.querySelector(`input[name="${name}"][value="${val}"]`);
+      if(inp&&inp.type==='checkbox'){
+        const chk=inp.closest('.chk-opt'); if(chk) toggleCheckbox(chk);
+      }
+    });}
+  });
+  // selects
+  Object.keys(d).forEach(name=>{
+    const sel=document.querySelector(`select[name="${name}"]`);
+    if(sel&&d[name]) sel.value=d[name];
+  });
+  // mark answered cards
+  document.querySelectorAll('input[type=date],input[type=time]').forEach(el=>{
+    if(el.value) el.closest('.qcard')?.classList.add('answered');
+  });
+  updateProgress();
+  showToast('<i class="fa-solid fa-rotate-left"></i> Previous answers restored!','ok');
+}
+
+function dismissRestore(){
+  document.getElementById('restoreBanner').classList.remove('show');
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  window._draft=null;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VALIDATION & SUBMIT
+═══════════════════════════════════════════════════════════ */
+function validate(){
+  const errs=[];
+  ['t11strti','t11endi'].forEach(id=>{
+    if(!document.getElementById(id)?.value){
+      showErr(id); document.getElementById(`card-${id}`)?.classList.add('err-state'); errs.push(`card-${id}`);
+    } else { clearErr(id); document.getElementById(`card-${id}`)?.classList.remove('err-state'); }
+  });
+  return errs;
+}
+function showErr(id){document.getElementById(`err-${id}`)?.classList.add('show')}
+function clearErr(id){document.getElementById(`err-${id}`)?.classList.remove('show')}
+
+function submitSurvey(){
+  const errs=validate();
+  if(errs.length){
+    document.getElementById(errs[0])?.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast('<i class="fa-solid fa-triangle-exclamation"></i> Please fill in all required fields.','err');
+    return;
+  }
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════ */
+function showSavePill(){
+  const p=document.getElementById('savePill');p.classList.add('show');
+  clearTimeout(pillTimer);pillTimer=setTimeout(()=>p.classList.remove('show'),2200);
+}
+function updateFooter(msg){
+  const el=document.getElementById('footerTxt');if(el)el.textContent=msg;
+  setTimeout(()=>{if(el)el.textContent='Auto-saving as you go';},3000);
+}
+let toastT;
+function showToast(html,type='err'){
+  const t=document.getElementById('toast');t.innerHTML=html;
+  t.style.background=type==='ok'?'var(--ok)':'var(--err)';
+  t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* Jump nav */
+function buildJumpNav(){
+  const panel=document.getElementById('jumpPanel');
+  panel.innerHTML=SECTIONS.map(s=>`<button class="jump-item" onclick="jumpTo('${s.id}')">${s.title}</button>`).join('');
+}
+function toggleJump(){document.getElementById('jumpPanel').classList.toggle('open');}
+function jumpTo(id){
+  document.getElementById('sec-'+id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('jumpPanel').classList.remove('open');
+}
+// Close jump on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.jump-btn')&&!e.target.closest('.jump-panel'))
+    document.getElementById('jumpPanel').classList.remove('open');
+});
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', ()=>{
+  buildSurvey();
+  buildJumpNav();
+  initEvents();
+  // Auto-fill date and time
+  setToday(); setNow();
+  checkForDraft();
+  updateProgress();
+});
+</script>
+</body>
+</html>
